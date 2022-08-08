@@ -1,0 +1,21 @@
+mysql://i9yi5kzdht9bflic:dn96wex0f6rv4pi1@t07cxyau6qg7o5nz.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/ukejrlanoakpq3hg
+
+SPRING_DATASOURCE_URL jdbc:mysql://t07cxyau6qg7o5nz.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/ukejrlanoakpq3hg
+SPRING_DATASOURCE_USERNAME i9yi5kzdht9bflic
+SPRING_DATASOURCE_PASSWORD  dn96wex0f6rv4pi1
+Host name t07cxyau6qg7o5nz.cbetxkdyhwsb.us-east-1.rds.amazonaws.com
+
+Database ukejrlanoakpq3hg
+
+
+mysql://ysyglspqq0kl7kka:k9a321kd8jc3odbu@x71wqc4m22j8e3ql.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/ms3mask1udg6ywbu
+
+SPRING_DATASOURCE_URL jdbc:mysql://x71wqc4m22j8e3ql.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/ms3mask1udg6ywbu
+
+SPRING_DATASOURCE_USERNAME      ysyglspqq0kl7kka
+
+SPRING_DATASOURCE_PASSWORD       k9a321kd8jc3odbu
+
+Host name        x71wqc4m22j8e3ql.cbetxkdyhwsb.us-east-1.rds.amazonaws.com
+
+Database         ms3mask1udg6ywbu
