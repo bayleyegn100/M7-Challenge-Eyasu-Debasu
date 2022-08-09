@@ -20,7 +20,7 @@ public class LabelController {
     }
 
     @GetMapping("/label/{id}")
-    public Label getLabelById(@PathVariable Long id) {
+    public Label getLabelById(@PathVariable("id") Long id) {
         Optional<Label> returnVal = labelRepository.findById(id);
         if (returnVal.isPresent()) {
             return returnVal.get();
@@ -37,13 +37,13 @@ public class LabelController {
 
     @PutMapping("/label/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateLabelById(@PathVariable Long id, @RequestBody Label label) {
+    public void updateLabelById(@PathVariable("id") Long id, @RequestBody Label label) {
         labelRepository.save(label);
     }
 
-    @DeleteMapping("/labels/{id}")
+    @DeleteMapping("/label/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteLabelById(@PathVariable Long id) {
+    public void deleteLabelById(@PathVariable("id") Long id) {
         labelRepository.deleteById(id);
     }
 }

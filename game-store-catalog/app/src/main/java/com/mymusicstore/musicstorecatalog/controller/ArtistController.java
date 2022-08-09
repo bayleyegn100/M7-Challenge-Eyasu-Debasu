@@ -20,7 +20,7 @@ public class ArtistController {
     }
 
     @GetMapping("/artist/{id}")
-    public Artist getArtistById(@PathVariable Long id) {
+    public Artist getArtistById(@PathVariable("id") Long id) {
         Optional<Artist> returnVal = artistRepository.findById(id);
         if (returnVal.isPresent()) {
             return returnVal.get();
@@ -28,22 +28,21 @@ public class ArtistController {
             return null;
         }
     }
-
     @PostMapping("/artist")
     @ResponseStatus(HttpStatus.CREATED)
     public Artist addArtist(@RequestBody Artist artist) {
         return artistRepository.save(artist);
     }
 
-    @PutMapping("/artists")
+    @PutMapping("/artist/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateArtist(@RequestBody Artist artist) {
+    public void updateArtist(@PathVariable("id") @RequestBody Artist artist) {
         artistRepository.save(artist);
     }
 
     @DeleteMapping("/artist/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteArtistById(@PathVariable Long id) {
+    public void deleteArtistById(@PathVariable("id") Long id) {
         artistRepository.deleteById(id);
     }
 }

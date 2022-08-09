@@ -27,7 +27,6 @@ public class Album  implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "albumId")
     private Set<Track> tracks = new HashSet<>();
-
     private String title;
 //    @Column(name = "artist_id")
     private Long artistId;

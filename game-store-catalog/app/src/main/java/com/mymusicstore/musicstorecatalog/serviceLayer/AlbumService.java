@@ -9,6 +9,7 @@ import com.mymusicstore.musicstorecatalog.repository.ArtistRepository;
 import com.mymusicstore.musicstorecatalog.repository.LabelRepository;
 import com.mymusicstore.musicstorecatalog.repository.TrackRepository;
 import com.mymusicstore.musicstorecatalog.viewmodel.AlbumViewModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ public class AlbumService {
     private LabelRepository labelRepository;
     private TrackRepository trackRepository;
 
+    @Autowired
     public AlbumService(AlbumRepository albumRepository, ArtistRepository artistRepository, LabelRepository labelRepository, TrackRepository trackRepository) {
         this.albumRepository = albumRepository;
         this.artistRepository = artistRepository;
@@ -32,36 +34,34 @@ public class AlbumService {
         this.trackRepository = trackRepository;
     }
     @Transactional
-    //If the whole method does not work successfully none the changes are applied. In this case I made some changes in side the database by adding new album and track list.
+    //If the whole method does not work successfully none of the changes are applied. In this case I made some changes in side the database by adding new album and track list.
     public AlbumViewModel saveAlbum(AlbumViewModel albumViewModel) {
         Album album = new Album();                   //empty album
         album.setTitle(albumViewModel.getTitle());                                 //get the title form albumviewmodel and set it to the new album.
-        album.setReleaseDate(albumViewModel.getReleaseDate());                   //get the release date form albumviewmodel and set it to the new album.
-        album.setListPrice(albumViewModel.getListPrice());                       //get the list price form albumviewmodel and set it to the new album.
+        album.setReleaseDate(albumViewModel.getReleaseDate());
+        album.setListPrice(albumViewModel.getListPrice());
         album.setArtistId(albumViewModel.getArtist().getId());                  //get the artist id form albumviewmodel first by getting the artist and then the id and set it to the new album.
-        album.setLabelId(albumViewModel.getLabel().getId());                   //get the label id form albumviewmodel first by getting the label and then the id and set it to the new album.
+        album.setLabelId(albumViewModel.getLabel().getId());
 
-        album = albumRepository.save(album);                                 //it puts album info in the db. Artist and label are already in the database.
-        albumViewModel.setId(album.getId());                                //Based on the id that i get for the album I am setting id for album view model.
-
-        List<Track> tracklist = albumViewModel.getTracks();                //For the track i am going to do two things set the id based on the id that i got to the new album as shown above. And put it in to a db.
-        tracklist.stream()
-                .forEach((t -> {
+        album = albumRepository.save(album);                                 //it puts this new album info in the db.
+        albumViewModel.setId(album.getId());                                //Based on the id that I got for the album I am setting id for album view model.
+//it adds album id to tracks and persist tracks
+        List<Track> tracks = albumViewModel.getTracks();                //For the track I am going to do two things set the id based on the id that i got to the new album as shown above. And put it in to a db.
+        tracks.stream()
+                .forEach(t -> {
                     t.setAlbumId(albumViewModel.getId());               //set album id for each truck
                     trackRepository.save(t);                           //Let track to show up in the db
-                }));
+                });
 
-        tracklist = trackRepository.findAllTracksByAlbumId(albumViewModel.getId()); //read them again in the db
-        albumViewModel.setTracks(tracklist);                        //Based on the id that I got for the track list I am setting id for album view model.
+        tracks = trackRepository.findAllTracksByAlbumId(albumViewModel.getId()); //read them again in the db
+        albumViewModel.setTracks(tracks);                        //Based on the id that I got for the track list I am setting id for album view model.
         return albumViewModel;
     }
-
     // Assemble the AlbumViewModel
     private AlbumViewModel buildAlbumViewModel(Album album) {
-
         Optional<Artist> artist = artistRepository.findById(album.getArtistId());
         Optional<Label> label = labelRepository.findById(album.getLabelId());
-        List<Track> track = trackRepository.findAllTracksByAlbumId(album.getArtistId());
+        List<Track> trackList = trackRepository.findAllTracksByAlbumId(album.getArtistId());
 
         AlbumViewModel albumViewModel = new AlbumViewModel();
         albumViewModel.setId(album.getId());
@@ -70,25 +70,18 @@ public class AlbumService {
         albumViewModel.setListPrice(album.getListPrice());
         albumViewModel.setArtist(artist.get());
         albumViewModel.setLabel(label.get());
-        albumViewModel.setTracks(track);
+        albumViewModel.setTracks(trackList);
 
         return albumViewModel;
     }
 
     public AlbumViewModel findAlbumById(Long id) {
         Optional<Album> album = albumRepository.findById(id);
-        if (album.isPresent()) {
-            return buildAlbumViewModel((album.get())); // if an album is available build an album view model.
-        }
-        return null;
+
+            return album.isPresent() ? buildAlbumViewModel((album.get())) : null; // if an album is available build an album view model else return null.
     }
 
     public List<AlbumViewModel> findAllAlbums() {
-//        List<Album> albumList = albumRepository.findAll();
-//        List<AlbumViewModel> albumViewModelList = albumList.stream()
-//                .map(album -> buildAlbumViewModel(album))
-//                .collect(Collectors.toList());
-//        return albumViewModelList;
         List<Album> aList = albumRepository.findAll();
         List<AlbumViewModel> avmList = new ArrayList<>();
 
@@ -100,26 +93,26 @@ public class AlbumService {
     }
     @Transactional
     public void updateAlbumById(AlbumViewModel albumViewModel){
-//        First let me update the album information by creating a new empty album.
+//        First I am going to update the album information by creating a new empty album.
         Album album = new Album();
         album.setLabelId(albumViewModel.getLabel().getId());
         album.setId(albumViewModel.getId());
         album.setReleaseDate(albumViewModel.getReleaseDate());
         album.setTitle(albumViewModel.getTitle());
-        album.setArtistId((albumViewModel.getArtist().getId()));
+        album.setArtistId(albumViewModel.getArtist().getId());
         album.setListPrice(albumViewModel.getListPrice());
         albumRepository.save(album);
 
         List<Track> tracklist = trackRepository.findAllTracksByAlbumId(album.getId());
         tracklist.stream()
-                .forEach((track -> {
-                    trackRepository.deleteById((track.getId()));
-                }));
-        List<Track> trackList = albumViewModel.getTracks();
-        trackList.stream()
                 .forEach(track -> {
-                    track.setAlbumId(albumViewModel.getId());
-                    track = trackRepository.save(track);
+                    trackRepository.deleteById(track.getId());
+                });
+        List<Track> track = albumViewModel.getTracks();
+        track.stream()
+                .forEach(t -> {
+                    t.setAlbumId(albumViewModel.getId());
+                    t = trackRepository.save(t);
 
                 });
 

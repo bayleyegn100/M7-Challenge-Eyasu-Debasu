@@ -19,9 +19,9 @@ public class AlbumController {
     public AlbumViewModel addAlbum(@RequestBody AlbumViewModel albumViewModel){
         return albumService.saveAlbum(albumViewModel);
     }
-    @PutMapping("/album/{id}")
+    @GetMapping("/album/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public AlbumViewModel getAlbumById(@PathVariable Long id){
+    public AlbumViewModel getAlbumById(@PathVariable("id") Long id){
         return albumService.findAlbumById(id);
     }
     @GetMapping("/albums")
@@ -29,14 +29,14 @@ public class AlbumController {
     public List<AlbumViewModel> getAllAlbums(){
         return albumService.findAllAlbums();
     }
-    @PutMapping("/album")
+    @PutMapping("/album/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateAlbum( @RequestBody AlbumViewModel albumViewModel){
+    public void updateAlbum(@PathVariable("id") @RequestBody AlbumViewModel albumViewModel){
         albumService.updateAlbumById(albumViewModel);
     }
     @DeleteMapping("/album/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAlbumById(@PathVariable Long id){
+    public void deleteAlbumById(@PathVariable("id") Long id){
         albumService.deleteById(id);
     }
 }

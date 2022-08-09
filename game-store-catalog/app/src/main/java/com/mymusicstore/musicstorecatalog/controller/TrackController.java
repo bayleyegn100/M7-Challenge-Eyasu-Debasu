@@ -16,11 +16,11 @@ public class TrackController {
 
     @GetMapping("/tracks")
     public List<Track> getAllTracks() {
-        return trackRepository.findAll();
+     return trackRepository.findAll();
     }
 
     @GetMapping("/track/{id}")
-    public Track getTrackById(@PathVariable Long id) {
+    public Track getTrackById(@PathVariable("id") Long id) {
         Optional<Track> returnVal = trackRepository.findById(id);
         if (returnVal.isPresent()) {
             return returnVal.get();
@@ -29,21 +29,21 @@ public class TrackController {
         }
     }
 
-    @PostMapping("/tracks")
+    @PostMapping("/track")
     @ResponseStatus(HttpStatus.CREATED)
     public Track addTrack(@RequestBody Track track) {
         return trackRepository.save(track);
     }
 
-    @PutMapping("/tracks/{id}")
+    @PutMapping("/track/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateTrackById(@PathVariable Long id, @RequestBody Track track) {
+    public void updateTrackById(@PathVariable("id") Long id, @RequestBody Track track) {
         trackRepository.save(track);
     }
 
-    @DeleteMapping("/tracks/{id}")
+    @DeleteMapping("/track/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTrackById(@PathVariable Long id) {
+    public void deleteTrackById(@PathVariable("id") Long id) {
         trackRepository.deleteById(id);
     }
 }
